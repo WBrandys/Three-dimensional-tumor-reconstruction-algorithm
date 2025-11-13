@@ -1,0 +1,15 @@
+name: tumor-reconstruction
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - scipy
+  - matplotlib
+  - scikit-image
+  - opencv
+  - pyvista
+  - jupyter
+  - pip
+  - pip:
+      - pyvistaqt
