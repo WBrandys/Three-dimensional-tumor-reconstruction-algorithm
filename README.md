@@ -65,3 +65,10 @@ Five mouse models were used: 1338, 1339, 1340, 1341, 1342. Each mouse was imaged
 Each session has its own folder containing:
 - B-mode image slices
 - COCO annotation file (_annotations.coco.json)
+
+### Mesh output
+
+![3D tumor mesh visualization](https://github.com/user-attachments/assets/9e28ab2d-8ff3-40b7-a37c-ea1ca1a35150)
+
+*Example 3D reconstruction of a tumor from the 1340_04.03_sg series.*
+
