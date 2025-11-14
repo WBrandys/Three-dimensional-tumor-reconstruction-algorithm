@@ -57,11 +57,11 @@ def binary_mask(id):
 
 # Function which extracts slice number from the image name
 def number_of_slice(name):
-    base = name.rsplit('.', 1)[0]      # remove extension
-    m = re.search(r'(\d+)$', base)     # digits at the end
-    if not m:
-        raise ValueError(f"Brak numeru slice w nazwie pliku: {name}")
-    return int(m.group(1))
+    # znajdź wszystkie grupy cyfr w nazwie
+    nums = re.findall(r'\d+', name)
+    if not nums:
+        return None
+    return int(nums[-1])  # weź ostatnią grupę, np. 077
 
 # Sort images based on slice number
 all_ids = [item["id"] for item in data["images"]]
@@ -82,12 +82,13 @@ z1, y1, x1 = coords.max(axis=0) + 1
 
 volume_3d = volume_3d[z0:z1, y0:y1, x0:x1]
 
-STEP_SIZE_MM = 0.1016             # 3D-Step-Size
-BMODE_DEPTH_MM = 13.7360715866089   # B-Mode_Depth from Vevolab
+STEP_SIZE_MM =  0.1016 # 3D-Step-Size
+BMODE_DEPTH_MM = 13.73607159   # B-Mode_Depth from Vevolab
 BMODE_WIDTH_MM = 14.0524999238551   # B-Mode_Width from Vevolab
 
 pixelsize_new_y = BMODE_DEPTH_MM / height_px
 pixelsize_new_x = BMODE_WIDTH_MM / width_px
+
 slice_thickness_new = STEP_SIZE_MM / 4.0  # increase slices in Z-axis 4 times
 
 # Interpolation factor in Z
@@ -114,7 +115,7 @@ for _ in range(16):
 vertices, faces, normals, values = measure.marching_cubes(
     interpolated_data_edges,
     level=0.5,
-    spacing=(slice_thickness_new, pixelsize_new_x, pixelsize_new_y)
+    spacing=(slice_thickness_new, pixelsize_new_y, pixelsize_new_x)
 )
 
 # Convert into PyVista format
@@ -127,7 +128,7 @@ surf_filled = surf.fill_holes(hole_size=size)
 
 # Visualise the mesh
 plotter = pv.Plotter()
-plotter.add_mesh(surf_filled, color="lightgray", opacity=0.7, smooth_shading=True, show_edges=False)
+plotter.add_mesh(surf_filled, color="lightgrey", opacity=0.7, smooth_shading=True, show_edges=False)
 plotter.add_blurring()
 plotter.add_axes()
 plotter.camera_position = "iso"
