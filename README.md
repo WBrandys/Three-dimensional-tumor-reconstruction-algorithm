@@ -26,7 +26,7 @@ You can run either Jupyter Notebook or Python script.
 
 # Running the Reconstruction
 To run the `reconstruction.py` script on a specific imaging series, update the input path in the script. Edit the line:
-```
+```python
 with open('images/name_of_the_series/_annotations.coco.json', 'r') as file:
     data = json.load(file)
 ```
@@ -42,12 +42,25 @@ Most imaging series share the same parameters:
 - `BMODE_DEPTH_MM = 13.7360715866089`
 - `BMODE_WIDTH_MM = 14.0524999238551`
 
+All image stacks have a resolution of **height = 1204** and **width = 928** pixels.  
+Because of this, the morphological dilation step uses **16 iterations**, which corresponds to the spatial calibration of the imaging system.  
+If the image dimensions or scale change, the required number of dilation iterations should be adjusted proportionally.
+
+The relevant code segment:
+
+```python
+for _ in range(16):
+    interpolated_data_edges = binary_dilation(
+        interpolated_data_edges,
+        structure=np.ones((3, 3, 3))
+    )
+```
 However, there are exceptions.
 The exact values were extracted from VevoLab RAW XML metadata.
 A summary of parameter values is provided in the Excel file `parameters.xlsx`.
 
 ### Data structure
-Four mouse models were used: 1339, 1340, 1341, 1342.  Each mouse was imaged multiple times in two planes: axial and sagittal.
+Five mouse models were used: 1338, 1339, 1340, 1341, 1342. Each mouse was imaged multiple times in two planes: axial and sagittal.
 
 Each session has its own folder containing:
 - B-mode image slices
